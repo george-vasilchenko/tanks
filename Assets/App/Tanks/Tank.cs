@@ -41,9 +41,9 @@ namespace Tanks.App.Tanks
             this.orientationData.MoveDirectionInput = value.x;
         }
 
-        public void Look(float value)
+        public void Look(Vector2 value)
         {
-            this.orientationData.AimDirectionInput = value;
+            this.orientationData.AimDirectionInput = value.x;
         }
     }
 }

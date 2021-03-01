@@ -1,3 +1,4 @@
+using Tanks.App.Globals;
 using Tanks.App.Lobbies;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,7 +21,7 @@ namespace Tanks.App.Scenes
 
         private static void OnLobbyReady()
         {
-            SceneManager.LoadScene("Game");
+            SceneManager.LoadScene(SceneNames.GameScene);
         }
     }
 }
