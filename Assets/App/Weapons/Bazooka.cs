@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TankArcade.App.Features.Weapons
+namespace Tanks.App.Weapons
 {
     public class Bazooka : TankWeapon
     {

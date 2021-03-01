@@ -1,5 +1,5 @@
 using System;
-using TankArcade.App.Features.Weapons;
+using Tanks.App.Weapons;
 using UnityEngine;
 
 namespace Tanks.App.Tanks

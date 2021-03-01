@@ -1,7 +1,6 @@
 using Tanks.App.Inputs;
 using Tanks.App.Tanks;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Tanks.App.Players
 {
@@ -22,8 +21,6 @@ namespace Tanks.App.Players
 
         [SerializeField] private TankCreator tankCreator;
 
-        [SerializeField] private PlayerInput playerInput;
-
         private Tank tank;
 
         private void OnEnable()
@@ -32,6 +29,7 @@ namespace Tanks.App.Players
             this.gameInputAdapter.OnMovePerformed += this.OnMovePerformedHandler;
             this.gameInputAdapter.OnMoveCanceled += this.OnMoveCanceledHandler;
             this.gameInputAdapter.OnLookPerformed += this.OnLookPerformedHandler;
+            this.gameInputAdapter.OnLookCanceled += this.OnLookCanceledHandler;
         }
 
         private void OnDisable()
@@ -40,6 +38,7 @@ namespace Tanks.App.Players
             this.gameInputAdapter.OnMovePerformed -= this.OnMovePerformedHandler;
             this.gameInputAdapter.OnMoveCanceled -= this.OnMoveCanceledHandler;
             this.gameInputAdapter.OnLookPerformed -= this.OnLookPerformedHandler;
+            this.gameInputAdapter.OnLookCanceled += this.OnLookCanceledHandler;
         }
 
         public void Reset()
@@ -53,13 +52,21 @@ namespace Tanks.App.Players
             this.Id = id;
             this.gameObject.name = $"Player_{this.Id}";
             this.transform.SetParent(parent);
-            // this.playerInput.defaultActionMap = "UI";
         }
 
         public void InitializeGame()
         {
-            // this.playerInput.defaultActionMap = "Game";
             this.tank = this.tankCreator.Create(0, this.Id);
+        }
+
+        private void OnLookCanceledHandler(uint playerId)
+        {
+            if (this.Id != playerId)
+            {
+                return;
+            }
+
+            this.tank.Look(Vector2.zero);
         }
 
         private void OnMoveCanceledHandler(uint playerId)
@@ -92,7 +99,7 @@ namespace Tanks.App.Players
             this.tank.Move(value);
         }
 
-        private void OnLookPerformedHandler(uint playerId, float value)
+        private void OnLookPerformedHandler(uint playerId, Vector2 value)
         {
             if (this.Id != playerId)
             {

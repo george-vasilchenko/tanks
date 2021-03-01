@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TankArcade.App.Features.Weapons
+namespace Tanks.App.Weapons
 {
     [CreateAssetMenu(fileName = "BulletPrefabContainer", menuName = "App/Containers/BulletPrefabContainer", order = 0)]
     public class BulletPrefabContainer : ScriptableObject
