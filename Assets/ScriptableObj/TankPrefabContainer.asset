@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb5ff1dad5de4dddaa0bcb33e75321f4, type: 3}
+  m_Name: TankPrefabContainer
+  m_EditorClassIdentifier: 
+  tankPrefabs:
+  - {fileID: 8528246722853534291, guid: 577fa588133ec44388dfd4c7dfc63073, type: 3}

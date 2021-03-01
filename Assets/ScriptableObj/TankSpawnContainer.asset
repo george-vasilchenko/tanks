@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f0a89d93b8d4e2b81a0f6d4f648901c, type: 3}
+  m_Name: TankSpawnContainer
+  m_EditorClassIdentifier: 
+  locations:
+  - {fileID: 4270570272418632942, guid: fb2237267188a4b45b2ab8ca797e2358, type: 3}
+  - {fileID: 4417825207478922396, guid: 7bfec3594e2734038b260b3c274e23b6, type: 3}
+  - {fileID: 522773907446674753, guid: c4c70e03a59504f8ca4b5215ec301cb2, type: 3}
+  - {fileID: 5774869932702955754, guid: dc0a49782e9eb49a5ab3605daf20aacf, type: 3}
