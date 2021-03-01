@@ -59,9 +59,9 @@ namespace Tanks.App.Inputs
             userId = user.Value.id;
             return true;
         }
-        
+
         private static uint GetUserId(InputAction.CallbackContext context) => InputUser.FindUserPairedToDevice(context.control.device)!.Value.id;
-        
+
         public event Action<uint> OnSubmit;
 
         public event Action<uint> OnCancel;

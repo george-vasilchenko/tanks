@@ -45,9 +45,9 @@ namespace Tanks.App.Inputs
             {
                 if (context.performed)
                 {
-                    this.OnLookPerformed?.Invoke(userId, context.ReadValue<float>());
+                    this.OnLookPerformed?.Invoke(userId, context.ReadValue<Vector2>());
                 }
-                
+
                 if (context.canceled)
                 {
                     this.OnLookCanceled?.Invoke(userId);
@@ -69,12 +69,12 @@ namespace Tanks.App.Inputs
             userId = user?.id ?? 999;
             return user.HasValue;
         }
-        
+
         public event Action<uint, Vector2> OnMovePerformed;
 
         public event Action<uint> OnMoveCanceled;
 
-        public event Action<uint, float> OnLookPerformed;
+        public event Action<uint, Vector2> OnLookPerformed;
 
         public event Action<uint> OnLookCanceled;
 
