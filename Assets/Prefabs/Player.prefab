@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3772820286127194203}
   - component: {fileID: 2451577480425322515}
   - component: {fileID: -2873476926107869361}
+  - component: {fileID: 260174916265514772}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -45,9 +46,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4512c764f75514ae5871e7c773465113, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameInputAdapter: {fileID: 11400000, guid: 468fb365fdec34346840749837b7bbe2, type: 2}
   tankCreator: {fileID: 2451577480425322515}
   playerInput: {fileID: -2873476926107869361}
+  gameInputReader: {fileID: 260174916265514772}
 --- !u!114 &2451577480425322515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,8 +75,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: 0}
-  m_NotificationBehavior: 1
+  m_Actions: {fileID: -944628639613478452, guid: 03dcde224e2594e5bb9dc2950e61636f, type: 3}
+  m_NotificationBehavior: 3
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -192,3 +193,16 @@ MonoBehaviour:
   m_DefaultActionMap: UI
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &260174916265514772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3772820286127194200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e36a793cb4df4f4d90809ba6f570a9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inGamePauseChannel: {fileID: 11400000, guid: c2a9c592b7d0e4091b45f8afdb361e31, type: 2}

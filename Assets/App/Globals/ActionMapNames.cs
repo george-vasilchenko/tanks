@@ -1,8 +1,8 @@
 namespace Tanks.App.Globals
 {
-    public static class SceneNames
+    public static class ActionMapNames
     {
-        public const string Menu = "Menu";
         public const string Game = "Game";
+        public const string Ui = "UI";
     }
 }

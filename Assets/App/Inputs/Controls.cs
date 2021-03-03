@@ -5,15 +5,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
+using Object = UnityEngine.Object;
 
 namespace Tanks.App.Inputs
 {
-    public class @Controls : IInputActionCollection, IDisposable
+    public class Controls : IInputActionCollection, IDisposable
     {
-        public InputActionAsset asset { get; }
-        public @Controls()
+        // Game
+        private readonly InputActionMap m_Game;
+        private readonly InputAction m_Game_Fire;
+        private readonly InputAction m_Game_Look;
+        private readonly InputAction m_Game_Move;
+        private readonly InputAction m_Game_Pause;
+
+        // UI
+        private readonly InputActionMap m_UI;
+        private readonly InputAction m_UI_Cancel;
+        private readonly InputAction m_UI_Start;
+        private readonly InputAction m_UI_Submit;
+        private IGameActions m_GameActionsCallbackInterface;
+        private int m_GamepadSchemeIndex = -1;
+        private IUIActions m_UIActionsCallbackInterface;
+
+        public Controls()
         {
-            asset = InputActionAsset.FromJson(@"{
+            this.asset = InputActionAsset.FromJson(@"{
     ""name"": ""Controls"",
     ""maps"": [
         {
@@ -40,6 +56,14 @@ namespace Tanks.App.Inputs
                     ""name"": ""Fire"",
                     ""type"": ""Button"",
                     ""id"": ""d1c9f7f2-a56a-4148-b8b1-a56628662927"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""6ebae894-4f38-4724-be4f-a5a01f424265"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -76,6 +100,17 @@ namespace Tanks.App.Inputs
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a40f8bac-1ec3-4ff5-85ca-27b7458a1901"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -162,177 +197,215 @@ namespace Tanks.App.Inputs
     ]
 }");
             // Game
-            m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
-            m_Game_Move = m_Game.FindAction("Move", throwIfNotFound: true);
-            m_Game_Look = m_Game.FindAction("Look", throwIfNotFound: true);
-            m_Game_Fire = m_Game.FindAction("Fire", throwIfNotFound: true);
+            this.m_Game = this.asset.FindActionMap("Game", true);
+            this.m_Game_Move = this.m_Game.FindAction("Move", true);
+            this.m_Game_Look = this.m_Game.FindAction("Look", true);
+            this.m_Game_Fire = this.m_Game.FindAction("Fire", true);
+            this.m_Game_Pause = this.m_Game.FindAction("Pause", true);
             // UI
-            m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
-            m_UI_Start = m_UI.FindAction("Start", throwIfNotFound: true);
-            m_UI_Submit = m_UI.FindAction("Submit", throwIfNotFound: true);
-            m_UI_Cancel = m_UI.FindAction("Cancel", throwIfNotFound: true);
+            this.m_UI = this.asset.FindActionMap("UI", true);
+            this.m_UI_Start = this.m_UI.FindAction("Start", true);
+            this.m_UI_Submit = this.m_UI.FindAction("Submit", true);
+            this.m_UI_Cancel = this.m_UI.FindAction("Cancel", true);
         }
 
-        public void Dispose()
-        {
-            UnityEngine.Object.Destroy(asset);
-        }
+        public InputActionAsset asset { get; }
 
-        public InputBinding? bindingMask
-        {
-            get => asset.bindingMask;
-            set => asset.bindingMask = value;
-        }
+        public GameActions Game => new GameActions(this);
 
-        public ReadOnlyArray<InputDevice>? devices
-        {
-            get => asset.devices;
-            set => asset.devices = value;
-        }
+        public UIActions UI => new UIActions(this);
 
-        public ReadOnlyArray<InputControlScheme> controlSchemes => asset.controlSchemes;
-
-        public bool Contains(InputAction action)
-        {
-            return asset.Contains(action);
-        }
-
-        public IEnumerator<InputAction> GetEnumerator()
-        {
-            return asset.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public void Enable()
-        {
-            asset.Enable();
-        }
-
-        public void Disable()
-        {
-            asset.Disable();
-        }
-
-        // Game
-        private readonly InputActionMap m_Game;
-        private IGameActions m_GameActionsCallbackInterface;
-        private readonly InputAction m_Game_Move;
-        private readonly InputAction m_Game_Look;
-        private readonly InputAction m_Game_Fire;
-        public struct GameActions
-        {
-            private @Controls m_Wrapper;
-            public GameActions(@Controls wrapper) { m_Wrapper = wrapper; }
-            public InputAction @Move => m_Wrapper.m_Game_Move;
-            public InputAction @Look => m_Wrapper.m_Game_Look;
-            public InputAction @Fire => m_Wrapper.m_Game_Fire;
-            public InputActionMap Get() { return m_Wrapper.m_Game; }
-            public void Enable() { Get().Enable(); }
-            public void Disable() { Get().Disable(); }
-            public bool enabled => Get().enabled;
-            public static implicit operator InputActionMap(GameActions set) { return set.Get(); }
-            public void SetCallbacks(IGameActions instance)
-            {
-                if (m_Wrapper.m_GameActionsCallbackInterface != null)
-                {
-                    @Move.started -= m_Wrapper.m_GameActionsCallbackInterface.OnMove;
-                    @Move.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnMove;
-                    @Move.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnMove;
-                    @Look.started -= m_Wrapper.m_GameActionsCallbackInterface.OnLook;
-                    @Look.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnLook;
-                    @Look.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnLook;
-                    @Fire.started -= m_Wrapper.m_GameActionsCallbackInterface.OnFire;
-                    @Fire.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnFire;
-                    @Fire.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnFire;
-                }
-                m_Wrapper.m_GameActionsCallbackInterface = instance;
-                if (instance != null)
-                {
-                    @Move.started += instance.OnMove;
-                    @Move.performed += instance.OnMove;
-                    @Move.canceled += instance.OnMove;
-                    @Look.started += instance.OnLook;
-                    @Look.performed += instance.OnLook;
-                    @Look.canceled += instance.OnLook;
-                    @Fire.started += instance.OnFire;
-                    @Fire.performed += instance.OnFire;
-                    @Fire.canceled += instance.OnFire;
-                }
-            }
-        }
-        public GameActions @Game => new GameActions(this);
-
-        // UI
-        private readonly InputActionMap m_UI;
-        private IUIActions m_UIActionsCallbackInterface;
-        private readonly InputAction m_UI_Start;
-        private readonly InputAction m_UI_Submit;
-        private readonly InputAction m_UI_Cancel;
-        public struct UIActions
-        {
-            private @Controls m_Wrapper;
-            public UIActions(@Controls wrapper) { m_Wrapper = wrapper; }
-            public InputAction @Start => m_Wrapper.m_UI_Start;
-            public InputAction @Submit => m_Wrapper.m_UI_Submit;
-            public InputAction @Cancel => m_Wrapper.m_UI_Cancel;
-            public InputActionMap Get() { return m_Wrapper.m_UI; }
-            public void Enable() { Get().Enable(); }
-            public void Disable() { Get().Disable(); }
-            public bool enabled => Get().enabled;
-            public static implicit operator InputActionMap(UIActions set) { return set.Get(); }
-            public void SetCallbacks(IUIActions instance)
-            {
-                if (m_Wrapper.m_UIActionsCallbackInterface != null)
-                {
-                    @Start.started -= m_Wrapper.m_UIActionsCallbackInterface.OnStart;
-                    @Start.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnStart;
-                    @Start.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnStart;
-                    @Submit.started -= m_Wrapper.m_UIActionsCallbackInterface.OnSubmit;
-                    @Submit.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnSubmit;
-                    @Submit.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnSubmit;
-                    @Cancel.started -= m_Wrapper.m_UIActionsCallbackInterface.OnCancel;
-                    @Cancel.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnCancel;
-                    @Cancel.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnCancel;
-                }
-                m_Wrapper.m_UIActionsCallbackInterface = instance;
-                if (instance != null)
-                {
-                    @Start.started += instance.OnStart;
-                    @Start.performed += instance.OnStart;
-                    @Start.canceled += instance.OnStart;
-                    @Submit.started += instance.OnSubmit;
-                    @Submit.performed += instance.OnSubmit;
-                    @Submit.canceled += instance.OnSubmit;
-                    @Cancel.started += instance.OnCancel;
-                    @Cancel.performed += instance.OnCancel;
-                    @Cancel.canceled += instance.OnCancel;
-                }
-            }
-        }
-        public UIActions @UI => new UIActions(this);
-        private int m_GamepadSchemeIndex = -1;
         public InputControlScheme GamepadScheme
         {
             get
             {
-                if (m_GamepadSchemeIndex == -1) m_GamepadSchemeIndex = asset.FindControlSchemeIndex("Gamepad");
-                return asset.controlSchemes[m_GamepadSchemeIndex];
+                if (this.m_GamepadSchemeIndex == -1)
+                {
+                    this.m_GamepadSchemeIndex = this.asset.FindControlSchemeIndex("Gamepad");
+                }
+
+                return this.asset.controlSchemes[this.m_GamepadSchemeIndex];
             }
         }
+
+        public void Dispose()
+        {
+            Object.Destroy(this.asset);
+        }
+
+        public InputBinding? bindingMask
+        {
+            get => this.asset.bindingMask;
+            set => this.asset.bindingMask = value;
+        }
+
+        public ReadOnlyArray<InputDevice>? devices
+        {
+            get => this.asset.devices;
+            set => this.asset.devices = value;
+        }
+
+        public ReadOnlyArray<InputControlScheme> controlSchemes => this.asset.controlSchemes;
+
+        public bool Contains(InputAction action) => this.asset.Contains(action);
+
+        public IEnumerator<InputAction> GetEnumerator() => this.asset.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+
+        public void Enable()
+        {
+            this.asset.Enable();
+        }
+
+        public void Disable()
+        {
+            this.asset.Disable();
+        }
+
+        public struct GameActions
+        {
+            private readonly Controls m_Wrapper;
+
+            public GameActions(Controls wrapper) => this.m_Wrapper = wrapper;
+
+            public InputAction Move => this.m_Wrapper.m_Game_Move;
+
+            public InputAction Look => this.m_Wrapper.m_Game_Look;
+
+            public InputAction Fire => this.m_Wrapper.m_Game_Fire;
+
+            public InputAction Pause => this.m_Wrapper.m_Game_Pause;
+
+            public InputActionMap Get() => this.m_Wrapper.m_Game;
+
+            public void Enable()
+            {
+                this.Get().Enable();
+            }
+
+            public void Disable()
+            {
+                this.Get().Disable();
+            }
+
+            public bool enabled => this.Get().enabled;
+
+            public static implicit operator InputActionMap(GameActions set) => set.Get();
+
+            public void SetCallbacks(IGameActions instance)
+            {
+                if (this.m_Wrapper.m_GameActionsCallbackInterface != null)
+                {
+                    this.Move.started -= this.m_Wrapper.m_GameActionsCallbackInterface.OnMove;
+                    this.Move.performed -= this.m_Wrapper.m_GameActionsCallbackInterface.OnMove;
+                    this.Move.canceled -= this.m_Wrapper.m_GameActionsCallbackInterface.OnMove;
+                    this.Look.started -= this.m_Wrapper.m_GameActionsCallbackInterface.OnLook;
+                    this.Look.performed -= this.m_Wrapper.m_GameActionsCallbackInterface.OnLook;
+                    this.Look.canceled -= this.m_Wrapper.m_GameActionsCallbackInterface.OnLook;
+                    this.Fire.started -= this.m_Wrapper.m_GameActionsCallbackInterface.OnFire;
+                    this.Fire.performed -= this.m_Wrapper.m_GameActionsCallbackInterface.OnFire;
+                    this.Fire.canceled -= this.m_Wrapper.m_GameActionsCallbackInterface.OnFire;
+                    this.Pause.started -= this.m_Wrapper.m_GameActionsCallbackInterface.OnPause;
+                    this.Pause.performed -= this.m_Wrapper.m_GameActionsCallbackInterface.OnPause;
+                    this.Pause.canceled -= this.m_Wrapper.m_GameActionsCallbackInterface.OnPause;
+                }
+
+                this.m_Wrapper.m_GameActionsCallbackInterface = instance;
+                if (instance != null)
+                {
+                    this.Move.started += instance.OnMove;
+                    this.Move.performed += instance.OnMove;
+                    this.Move.canceled += instance.OnMove;
+                    this.Look.started += instance.OnLook;
+                    this.Look.performed += instance.OnLook;
+                    this.Look.canceled += instance.OnLook;
+                    this.Fire.started += instance.OnFire;
+                    this.Fire.performed += instance.OnFire;
+                    this.Fire.canceled += instance.OnFire;
+                    this.Pause.started += instance.OnPause;
+                    this.Pause.performed += instance.OnPause;
+                    this.Pause.canceled += instance.OnPause;
+                }
+            }
+        }
+
+        public struct UIActions
+        {
+            private readonly Controls m_Wrapper;
+
+            public UIActions(Controls wrapper) => this.m_Wrapper = wrapper;
+
+            public InputAction Start => this.m_Wrapper.m_UI_Start;
+
+            public InputAction Submit => this.m_Wrapper.m_UI_Submit;
+
+            public InputAction Cancel => this.m_Wrapper.m_UI_Cancel;
+
+            public InputActionMap Get() => this.m_Wrapper.m_UI;
+
+            public void Enable()
+            {
+                this.Get().Enable();
+            }
+
+            public void Disable()
+            {
+                this.Get().Disable();
+            }
+
+            public bool enabled => this.Get().enabled;
+
+            public static implicit operator InputActionMap(UIActions set) => set.Get();
+
+            public void SetCallbacks(IUIActions instance)
+            {
+                if (this.m_Wrapper.m_UIActionsCallbackInterface != null)
+                {
+                    this.Start.started -= this.m_Wrapper.m_UIActionsCallbackInterface.OnStart;
+                    this.Start.performed -= this.m_Wrapper.m_UIActionsCallbackInterface.OnStart;
+                    this.Start.canceled -= this.m_Wrapper.m_UIActionsCallbackInterface.OnStart;
+                    this.Submit.started -= this.m_Wrapper.m_UIActionsCallbackInterface.OnSubmit;
+                    this.Submit.performed -= this.m_Wrapper.m_UIActionsCallbackInterface.OnSubmit;
+                    this.Submit.canceled -= this.m_Wrapper.m_UIActionsCallbackInterface.OnSubmit;
+                    this.Cancel.started -= this.m_Wrapper.m_UIActionsCallbackInterface.OnCancel;
+                    this.Cancel.performed -= this.m_Wrapper.m_UIActionsCallbackInterface.OnCancel;
+                    this.Cancel.canceled -= this.m_Wrapper.m_UIActionsCallbackInterface.OnCancel;
+                }
+
+                this.m_Wrapper.m_UIActionsCallbackInterface = instance;
+                if (instance != null)
+                {
+                    this.Start.started += instance.OnStart;
+                    this.Start.performed += instance.OnStart;
+                    this.Start.canceled += instance.OnStart;
+                    this.Submit.started += instance.OnSubmit;
+                    this.Submit.performed += instance.OnSubmit;
+                    this.Submit.canceled += instance.OnSubmit;
+                    this.Cancel.started += instance.OnCancel;
+                    this.Cancel.performed += instance.OnCancel;
+                    this.Cancel.canceled += instance.OnCancel;
+                }
+            }
+        }
+
         public interface IGameActions
         {
             void OnMove(InputAction.CallbackContext context);
+
             void OnLook(InputAction.CallbackContext context);
+
             void OnFire(InputAction.CallbackContext context);
+
+            void OnPause(InputAction.CallbackContext context);
         }
+
         public interface IUIActions
         {
             void OnStart(InputAction.CallbackContext context);
+
             void OnSubmit(InputAction.CallbackContext context);
+
             void OnCancel(InputAction.CallbackContext context);
         }
     }

@@ -8,9 +8,9 @@ namespace Tanks.App.Tanks
 
         [SerializeField] private TankPrefabContainer tankPrefabContainer;
 
-        public Tank Create(uint tankId, uint playerId)
+        public Tank Create(uint tankId)
         {
-            var location = this.tankSpawnContainer.GetLocationAt((int)playerId);
+            var location = this.tankSpawnContainer.GetLocation();
             var prefab = this.tankPrefabContainer.GetTankPrefabById(tankId);
 
             return Instantiate(prefab, location.position, Quaternion.identity).GetComponent<Tank>();

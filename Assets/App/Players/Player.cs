@@ -1,45 +1,21 @@
 using Tanks.App.Inputs;
 using Tanks.App.Tanks;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Tanks.App.Players
 {
-    public interface IPlayer
-    {
-        uint Id { get; }
-
-        void InitializeUi(uint id, Transform parent);
-
-        void InitializeGame();
-
-        void Reset();
-    }
-
+    [RequireComponent(typeof(PlayerInput))]
+    [RequireComponent(typeof(GameInputReader))]
     public class Player : MonoBehaviour, IPlayer
     {
-        [SerializeField] private GameInputAdapter gameInputAdapter;
-
         [SerializeField] private TankCreator tankCreator;
+        [SerializeField] private PlayerInput playerInput;
+        [SerializeField] private GameInputReader gameInputReader;
 
         private Tank tank;
 
-        private void OnEnable()
-        {
-            this.gameInputAdapter.OnFire += this.OnFireHandler;
-            this.gameInputAdapter.OnMovePerformed += this.OnMovePerformedHandler;
-            this.gameInputAdapter.OnMoveCanceled += this.OnMoveCanceledHandler;
-            this.gameInputAdapter.OnLookPerformed += this.OnLookPerformedHandler;
-            this.gameInputAdapter.OnLookCanceled += this.OnLookCanceledHandler;
-        }
-
-        private void OnDisable()
-        {
-            this.gameInputAdapter.OnFire -= this.OnFireHandler;
-            this.gameInputAdapter.OnMovePerformed -= this.OnMovePerformedHandler;
-            this.gameInputAdapter.OnMoveCanceled -= this.OnMoveCanceledHandler;
-            this.gameInputAdapter.OnLookPerformed -= this.OnLookPerformedHandler;
-            this.gameInputAdapter.OnLookCanceled += this.OnLookCanceledHandler;
-        }
+        public int DeviceId { get; private set; }
 
         public void Reset()
         {
@@ -47,66 +23,26 @@ namespace Tanks.App.Players
 
         public uint Id { get; private set; }
 
-        public void InitializeUi(uint id, Transform parent)
+        public void SwitchToInput(string actionMapName)
+        {
+            this.playerInput.SwitchCurrentActionMap(actionMapName);
+        }
+
+        public void CreateTank()
+        {
+            this.tank = this.tankCreator.Create(0);
+            this.gameInputReader.SetReceiver(this.tank);
+        }
+
+        public void SetId(uint id)
         {
             this.Id = id;
             this.gameObject.name = $"Player_{this.Id}";
-            this.transform.SetParent(parent);
         }
 
-        public void InitializeGame()
+        public void SetDeviceId(int deviceId)
         {
-            this.tank = this.tankCreator.Create(0, this.Id);
-        }
-
-        private void OnLookCanceledHandler(uint playerId)
-        {
-            if (this.Id != playerId)
-            {
-                return;
-            }
-
-            this.tank.Look(Vector2.zero);
-        }
-
-        private void OnMoveCanceledHandler(uint playerId)
-        {
-            if (this.Id != playerId)
-            {
-                return;
-            }
-
-            this.tank.Move(Vector2.zero);
-        }
-
-        private void OnFireHandler(uint playerId)
-        {
-            if (this.Id != playerId)
-            {
-                return;
-            }
-
-            this.tank.Fire();
-        }
-
-        private void OnMovePerformedHandler(uint playerId, Vector2 value)
-        {
-            if (this.Id != playerId)
-            {
-                return;
-            }
-
-            this.tank.Move(value);
-        }
-
-        private void OnLookPerformedHandler(uint playerId, Vector2 value)
-        {
-            if (this.Id != playerId)
-            {
-                return;
-            }
-
-            this.tank.Look(value);
+            this.DeviceId = deviceId;
         }
     }
 }

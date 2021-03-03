@@ -4,9 +4,20 @@ namespace Tanks.App.Framework
 {
     public class GameContext : MonoBehaviour
     {
+        /*private static GameContext instance;
+
         private void Awake()
         {
-            DontDestroyOnLoad(this.gameObject);
-        }
+            DontDestroyOnLoad(this);
+
+            if (instance == null)
+            {
+                instance = this;
+            }
+            else
+            {
+                Destroy(this.gameObject);
+            }
+        }*/
     }
 }

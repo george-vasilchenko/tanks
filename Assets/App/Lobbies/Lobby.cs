@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Tanks.App.Globals;
 using Tanks.App.Inputs;
 using Tanks.App.Players;
 using UnityEngine;
@@ -16,11 +17,11 @@ namespace Tanks.App.Lobbies
 
         [SerializeField] private LobbyContentResponseChannel lobbyContentResponseChannel;
 
-        [SerializeField] private List<Player> players;
+        private List<IPlayer> profiles;
 
         private void Awake()
         {
-            this.players = new List<Player>(4);
+            this.profiles = new List<IPlayer>(4);
         }
 
         private void OnEnable()
@@ -37,16 +38,19 @@ namespace Tanks.App.Lobbies
 
         private void OnContentRequestHandler()
         {
-            this.lobbyContentResponseChannel.Broadcast(this.players);
+            this.lobbyContentResponseChannel.Broadcast(this.profiles);
         }
 
         private void AddPlayer(PlayerInput playerInput)
         {
-            playerInput.DeactivateInput();
-            var player = playerInput.GetComponent<Player>();
-            player.InitializeUi(playerInput.user.id, this.transform);
-
-            this.players.Add(player);
+            playerInput.transform.SetParent(this.transform);
+            
+            var player = playerInput.GetComponent<IPlayer>();
+            player.SetId(playerInput.user.id);
+            player.SwitchToInput(ActionMapNames.Ui);
+            player.SetDeviceId(playerInput.devices[0].deviceId);
+            
+            this.profiles.Add(player);
             this.playerJoinedLobbyChannel.Broadcast(player);
         }
     }

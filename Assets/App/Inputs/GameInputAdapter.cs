@@ -6,7 +6,7 @@ using UnityEngine.InputSystem.Users;
 namespace Tanks.App.Inputs
 {
     [CreateAssetMenu(fileName = "GameInputAdapter", menuName = "App/Input/GameInputAdapter", order = 0)]
-    public class GameInputAdapter : ScriptableObject, Controls.IGameActions
+    public class GameInputAdapter : ScriptableObject
     {
         private Controls controls;
 
@@ -14,70 +14,24 @@ namespace Tanks.App.Inputs
 
         private void OnEnable()
         {
-            this.Controls.Game.SetCallbacks(this);
+            this.Controls.Game.Pause.performed += this.OnPauseHandler;
             this.Controls.Enable();
         }
 
         private void OnDisable()
         {
+            this.Controls.Game.Pause.performed -= this.OnPauseHandler;
             this.Controls.Disable();
         }
 
-        void Controls.IGameActions.OnMove(InputAction.CallbackContext context)
-        {
-            if (IsUserRegistered(context.control.device, out var userId))
-            {
-                if (context.performed)
-                {
-                    this.OnMovePerformed?.Invoke(userId, context.ReadValue<Vector2>());
-                }
+        public event Action OnPause;
 
-                if (context.canceled)
-                {
-                    this.OnMoveCanceled?.Invoke(userId);
-                }
+        private void OnPauseHandler(InputAction.CallbackContext context)
+        {
+            if (InputUser.FindUserPairedToDevice(context.control.device).HasValue)
+            {
+                this.OnPause?.Invoke();
             }
         }
-
-        void Controls.IGameActions.OnLook(InputAction.CallbackContext context)
-        {
-            if (IsUserRegistered(context.control.device, out var userId))
-            {
-                if (context.performed)
-                {
-                    this.OnLookPerformed?.Invoke(userId, context.ReadValue<Vector2>());
-                }
-
-                if (context.canceled)
-                {
-                    this.OnLookCanceled?.Invoke(userId);
-                }
-            }
-        }
-
-        void Controls.IGameActions.OnFire(InputAction.CallbackContext context)
-        {
-            if (IsUserRegistered(context.control.device, out var userId) && context.performed)
-            {
-                this.OnFire?.Invoke(userId);
-            }
-        }
-
-        private static bool IsUserRegistered(InputDevice device, out uint userId)
-        {
-            var user = InputUser.FindUserPairedToDevice(device);
-            userId = user?.id ?? 999;
-            return user.HasValue;
-        }
-
-        public event Action<uint, Vector2> OnMovePerformed;
-
-        public event Action<uint> OnMoveCanceled;
-
-        public event Action<uint, Vector2> OnLookPerformed;
-
-        public event Action<uint> OnLookCanceled;
-
-        public event Action<uint> OnFire;
     }
 }

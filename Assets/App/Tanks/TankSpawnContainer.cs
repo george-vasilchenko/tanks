@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Tanks.App.Tanks
 {
@@ -6,7 +7,23 @@ namespace Tanks.App.Tanks
     public class TankSpawnContainer : ScriptableObject
     {
         [SerializeField] private Transform[] locations;
+        private int consumptionCounter;
 
-        public Transform GetLocationAt(int index) => this.locations[index];
+        private void OnEnable()
+        {
+            SceneManager.activeSceneChanged += this.OnActiveSceneChangedHandler;
+        }
+
+        private void OnDisable()
+        {
+            SceneManager.activeSceneChanged -= this.OnActiveSceneChangedHandler;
+        }
+
+        public Transform GetLocation() => this.locations[this.consumptionCounter++];
+
+        private void OnActiveSceneChangedHandler(Scene from, Scene to)
+        {
+            this.consumptionCounter = 0;
+        }
     }
 }

@@ -1,8 +1,9 @@
+using Tanks.App.Inputs;
 using UnityEngine;
 
 namespace Tanks.App.Tanks
 {
-    public class Tank : MonoBehaviour
+    public class Tank : MonoBehaviour, IGameInputReceiver
     {
         [SerializeField] private TankAmmunition tankAmmunition;
 

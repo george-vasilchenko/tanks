@@ -12,13 +12,11 @@ namespace Tanks.App.Ui
 
         [SerializeField] private Image readyImage;
 
-        private bool isInputAllowed;
-
         public bool IsReady { get; private set; }
 
-        public IPlayer Player { get; private set; }
+        public IPlayer Profile { get; private set; }
 
-        public bool IsFree => this.Player == null;
+        public bool IsFree => this.Profile == null;
 
         private void Awake()
         {
@@ -27,13 +25,13 @@ namespace Tanks.App.Ui
 
         public void Activate(IPlayer player)
         {
-            this.Player = player;
+            this.Profile = player;
             this.gameObject.SetActive(true);
         }
 
         public void Disable()
         {
-            this.Player = null;
+            this.Profile = null;
             this.UpdateReadyStatus(false);
             this.gameObject.SetActive(false);
         }
@@ -46,12 +44,6 @@ namespace Tanks.App.Ui
 
         public void SetReady(bool isReady)
         {
-            if (!this.isInputAllowed)
-            {
-                this.isInputAllowed = true;
-                return;
-            }
-
             this.UpdateReadyStatus(isReady);
         }
     }

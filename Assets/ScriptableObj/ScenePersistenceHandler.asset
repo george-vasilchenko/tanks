@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e03f6bc8dca2406aa4e94d49f74d2f2b, type: 3}
-  m_Name: ScenesHandler
+  m_Script: {fileID: 11500000, guid: 7433880ce5e7747c58fa0735a7207987, type: 3}
+  m_Name: ScenePersistenceHandler
   m_EditorClassIdentifier: 
-  lobbyReadyChannel: {fileID: 11400000, guid: 5607d5ac113f4483e8ef05d1c4024592, type: 2}
+  playerJoinedLobbyChannel: {fileID: 11400000, guid: 809e2a6f10d3e40f5808c560d78a7c58, type: 2}

@@ -26,10 +26,10 @@ namespace Tanks.App.Lobbies
         {
             switch (to.name)
             {
-                case SceneNames.MenuScene:
+                case SceneNames.Menu:
                     this.playerInputManager.EnableJoining();
                     break;
-                case SceneNames.GameScene:
+                case SceneNames.Game:
                     this.playerInputManager.DisableJoining();
                     break;
             }
