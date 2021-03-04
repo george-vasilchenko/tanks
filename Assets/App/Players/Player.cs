@@ -6,16 +6,9 @@ namespace Tanks.App.Players
     [RequireComponent(typeof(PlayerInput))]
     public class Player : MonoBehaviour, IPlayer
     {
-        /*[SerializeField] private PlayerInput playerInput;*/
-
         public int DeviceId { get; private set; }
 
         public uint Id { get; private set; }
-
-        public void SwitchToInput(string actionMapName)
-        {
-            /*this.playerInput.SwitchCurrentActionMap(actionMapName);*/
-        }
 
         public void SetId(uint id)
         {

@@ -43,7 +43,6 @@ namespace Tanks.App.Games
                 var player = playerInput.GetComponent<IGamePlayer>();
                 player.SetId(playerInput.user.id);
                 player.SetDeviceId(device.deviceId);
-                player.SwitchToInput(ActionMapNames.Game);
                 player.CreateTank();
                 playersToCreate.Add(player);
             }
@@ -60,11 +59,6 @@ namespace Tanks.App.Games
         {
             this.pauseUi.SetActive(isPaused);
             Time.timeScale = isPaused ? 0 : 1;
-
-            foreach (var player in this.players)
-            {
-                player.SwitchToInput(this.isPaused ? ActionMapNames.Ui : ActionMapNames.Game);
-            }
         }
     }
 }

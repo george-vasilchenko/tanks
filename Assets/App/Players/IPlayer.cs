@@ -9,7 +9,5 @@ namespace Tanks.App.Players
         void SetDeviceId(int deviceId);
 
         void SetId(uint id);
-
-        void SwitchToInput(string actionMapName);
     }
 }

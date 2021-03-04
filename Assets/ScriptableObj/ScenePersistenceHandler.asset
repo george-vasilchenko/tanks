@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7433880ce5e7747c58fa0735a7207987, type: 3}
   m_Name: ScenePersistenceHandler
   m_EditorClassIdentifier: 
+  restartGameChannel: {fileID: 11400000, guid: 623d320ddb5b74bcb9aae7ad72ac7621, type: 2}
   playerJoinedLobbyChannel: {fileID: 11400000, guid: 809e2a6f10d3e40f5808c560d78a7c58, type: 2}

@@ -32,9 +32,9 @@ namespace Tanks.App.Scenes
             this.PlayersDevices.Clear();
         }
 
-        private void OnPlayerJoinedLobbyHandler(IPlayer gamePlayer)
+        private void OnPlayerJoinedLobbyHandler(IPlayer player)
         {
-            this.PlayersDevices.Add(gamePlayer.Id, gamePlayer.DeviceId);
+            this.PlayersDevices.Add(player.Id, player.DeviceId);
         }
     }
 }

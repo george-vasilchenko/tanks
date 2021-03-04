@@ -47,7 +47,6 @@ namespace Tanks.App.Lobbies
             
             var player = playerInput.GetComponent<IPlayer>();
             player.SetId(playerInput.user.id);
-            player.SwitchToInput(ActionMapNames.Ui);
             player.SetDeviceId(playerInput.devices[0].deviceId);
             
             this.players.Add(player);
