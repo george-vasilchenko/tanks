@@ -17,11 +17,11 @@ namespace Tanks.App.Lobbies
 
         [SerializeField] private LobbyContentResponseChannel lobbyContentResponseChannel;
 
-        private List<IPlayer> profiles;
+        private List<IPlayer> players;
 
         private void Awake()
         {
-            this.profiles = new List<IPlayer>(4);
+            this.players = new List<IPlayer>(4);
         }
 
         private void OnEnable()
@@ -38,7 +38,7 @@ namespace Tanks.App.Lobbies
 
         private void OnContentRequestHandler()
         {
-            this.lobbyContentResponseChannel.Broadcast(this.profiles);
+            this.lobbyContentResponseChannel.Broadcast(this.players);
         }
 
         private void AddPlayer(PlayerInput playerInput)
@@ -50,7 +50,7 @@ namespace Tanks.App.Lobbies
             player.SwitchToInput(ActionMapNames.Ui);
             player.SetDeviceId(playerInput.devices[0].deviceId);
             
-            this.profiles.Add(player);
+            this.players.Add(player);
             this.playerJoinedLobbyChannel.Broadcast(player);
         }
     }

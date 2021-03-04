@@ -14,9 +14,9 @@ namespace Tanks.App.Ui
 
         public bool IsReady { get; private set; }
 
-        public IPlayer Profile { get; private set; }
+        public IPlayer Player { get; private set; }
 
-        public bool IsFree => this.Profile == null;
+        public bool IsFree => this.Player == null;
 
         private void Awake()
         {
@@ -25,13 +25,13 @@ namespace Tanks.App.Ui
 
         public void Activate(IPlayer player)
         {
-            this.Profile = player;
+            this.Player = player;
             this.gameObject.SetActive(true);
         }
 
         public void Disable()
         {
-            this.Profile = null;
+            this.Player = null;
             this.UpdateReadyStatus(false);
             this.gameObject.SetActive(false);
         }

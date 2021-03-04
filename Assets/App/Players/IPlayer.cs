@@ -11,9 +11,5 @@ namespace Tanks.App.Players
         void SetId(uint id);
 
         void SwitchToInput(string actionMapName);
-
-        void CreateTank();
-
-        void Reset();
     }
 }

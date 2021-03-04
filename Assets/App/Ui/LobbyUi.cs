@@ -90,7 +90,7 @@ namespace Tanks.App.Ui
 
         private void SetSlotReady(uint playerId, bool isReady)
         {
-            var slot = this.slots.Single(s => !s.IsFree && s.Profile.Id == playerId);
+            var slot = this.slots.Single(s => !s.IsFree && s.Player.Id == playerId);
             slot.SetReady(isReady);
         }
 

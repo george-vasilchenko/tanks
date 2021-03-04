@@ -1,24 +1,21 @@
-using System;
 using System.Collections.Generic;
 using Tanks.App.Globals;
 using Tanks.App.Inputs;
-using Tanks.App.Lobbies;
 using Tanks.App.Players;
 using Tanks.App.Scenes;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 namespace Tanks.App.Games
 {
     public class GameMode : MonoBehaviour
     {
-        [SerializeField] private GameObject playerPrefab;
+        [SerializeField] private PlayerPrefabContainer playerPrefabContainer;
         [SerializeField] private ScenePersistenceHandler scenePersistenceHandler;
         [SerializeField] private GameInputAdapter gameInputAdapter;
         [SerializeField] private GameObject pauseUi;
         private bool isPaused;
-        private IEnumerable<IPlayer> players;
+        private IEnumerable<IGamePlayer> players;
 
         private void Start()
         {
@@ -26,31 +23,32 @@ namespace Tanks.App.Games
             this.SetPause(false);
         }
 
-        private IEnumerable<IPlayer> CreatePlayers()
+        private void OnEnable()
         {
-            var playersToCreate = new List<IPlayer>();
+            this.gameInputAdapter.OnPause += this.OnPauseHandler;
+        }
+
+        private void OnDisable()
+        {
+            this.gameInputAdapter.OnPause -= this.OnPauseHandler;
+        }
+
+        private IEnumerable<IGamePlayer> CreatePlayers()
+        {
+            var playersToCreate = new List<IGamePlayer>();
             foreach (var playerDevice in this.scenePersistenceHandler.PlayersDevices)
             {
                 var device = InputSystem.GetDeviceById(playerDevice.Value);
-                var playerInput = PlayerInput.Instantiate(this.playerPrefab, pairWithDevice: device);
-                var player = playerInput.GetComponent<IPlayer>();
+                var playerInput = PlayerInput.Instantiate(this.playerPrefabContainer.GamePlayerPrefab, pairWithDevice: device);
+                var player = playerInput.GetComponent<IGamePlayer>();
                 player.SetId(playerInput.user.id);
                 player.SetDeviceId(device.deviceId);
                 player.SwitchToInput(ActionMapNames.Game);
                 player.CreateTank();
                 playersToCreate.Add(player);
             }
-            return playersToCreate;
-        }
 
-        private void OnEnable()
-        {
-            this.gameInputAdapter.OnPause += this.OnPauseHandler;
-        }
-        
-        private void OnDisable()
-        {
-            this.gameInputAdapter.OnPause -= this.OnPauseHandler;
+            return playersToCreate;
         }
 
         private void OnPauseHandler()

@@ -1242,7 +1242,7 @@ MonoBehaviour:
         m_Action: Join
         m_Flags: 0
     m_Reference: {fileID: 9109930987246652775, guid: 03dcde224e2594e5bb9dc2950e61636f, type: 3}
-  m_PlayerPrefab: {fileID: 3772820286127194200, guid: db67615a93a384e7498702d0996df02a, type: 3}
+  m_PlayerPrefab: {fileID: 7037359795588725658, guid: 9c443a521c9e84883953a37dc6c22b87, type: 3}
   m_SplitScreen: 0
   m_MaintainAspectRatioInSplitScreen: 0
   m_FixedNumberOfSplitScreens: -1

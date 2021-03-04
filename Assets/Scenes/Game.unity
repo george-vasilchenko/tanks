@@ -288,7 +288,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ece17da9b064d3a8bed626c09c4fb8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 3772820286127194200, guid: db67615a93a384e7498702d0996df02a, type: 3}
+  playerPrefabContainer: {fileID: 11400000, guid: 5e2a77571e4a44dde9d88177edc621c6, type: 2}
   scenePersistenceHandler: {fileID: 11400000, guid: c32228ba2fa4b4a4eb54eae597e6b72e, type: 2}
   gameInputAdapter: {fileID: 11400000, guid: 468fb365fdec34346840749837b7bbe2, type: 2}
   pauseUi: {fileID: 337614328}
