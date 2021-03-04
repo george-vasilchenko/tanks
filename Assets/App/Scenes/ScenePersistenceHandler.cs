@@ -8,6 +8,7 @@ namespace Tanks.App.Scenes
     [CreateAssetMenu(fileName = "ScenePersistenceHandler", menuName = "App/Scenes/ScenePersistenceHandler", order = 0)]
     public class ScenePersistenceHandler : ScriptableObject
     {
+        [SerializeField] private RestartGameChannel restartGameChannel;
         [SerializeField] private PlayerJoinedLobbyChannel playerJoinedLobbyChannel;
 
         private Dictionary<uint, int> playersDevices;
@@ -17,16 +18,23 @@ namespace Tanks.App.Scenes
         private void OnEnable()
         {
             this.playerJoinedLobbyChannel.OnInvoked += this.OnPlayerJoinedLobbyHandler;
+            this.restartGameChannel.OnInvoked += this.OnRestartGameChannelHandler;
         }
 
         private void OnDisable()
         {
             this.playerJoinedLobbyChannel.OnInvoked -= this.OnPlayerJoinedLobbyHandler;
+            this.restartGameChannel.OnInvoked -= this.OnRestartGameChannelHandler;
         }
 
-        private void OnPlayerJoinedLobbyHandler(IPlayer player)
+        private void OnRestartGameChannelHandler()
         {
-            this.PlayersDevices.Add(player.Id, player.DeviceId);
+            this.PlayersDevices.Clear();
+        }
+
+        private void OnPlayerJoinedLobbyHandler(IPlayer gamePlayer)
+        {
+            this.PlayersDevices.Add(gamePlayer.Id, gamePlayer.DeviceId);
         }
     }
 }
